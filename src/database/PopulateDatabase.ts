@@ -10,12 +10,13 @@ import { Producer } from '../repository/entity/producers.entity';
 
 export default async function populateDatabase(): Promise<void> {
     try {
-        // const isPopulate = await awardsRepository.count();
+        const awardsRepository = AppDataSource.getRepository(Award);
+        const isPopulate = await awardsRepository.count();
 
-        // if (isPopulate) {
-        //     console.log('database already populated')
-        //     return;
-        // }
+        if (isPopulate) {
+            console.log('database already populated')
+            return;
+        }
 
         const awards: Partial<Award>[] = [];
         const producers: string[] = [];
@@ -29,6 +30,7 @@ export default async function populateDatabase(): Promise<void> {
                     title: data.title,
                     studios: data.studios,
                     winner: data.winner === 'yes' ? true : false,
+                    producers: data.producers
                 };
                 awards.push(award);
                 producers.push(data.producers);
@@ -66,8 +68,6 @@ function parseArrayToProducer(producersArray: string[]) {
         );
     }, [] as { name: string }[]);
 
-    console.log(treatedProducer, ' -- treatedProducer -- ')
-
     const removeDuplicatesProducers = treatedProducer.filter((obj, index, self) =>
         index === self.findIndex((o) => (
             o.name === obj.name
@@ -79,6 +79,29 @@ function parseArrayToProducer(producersArray: string[]) {
 
 
 async function saveAwards(awards: Partial<Award>[]): Promise<void> {
+
+    const newAwards: Partial<Award>[] = [];
+    const producersRepository = AppDataSource.getRepository(Producer);
+
+    for await (const award of awards) {
+        if (award.producers === undefined) {
+          continue; 
+        }
+    
+        const producerNames = award.producers.toString().split(/\band\b|,/);
+    
+        const filteredNames = producerNames.filter(part => part.trim() !== "");
+    
+        award.producers = [];
+    
+        for (const producerName of filteredNames) {
+            const producer = await producersRepository.findOneBy({ name: producerName });
+            if(!producer) {
+                continue;
+            }
+            award.producers.push(producer);
+        }
+      }
     const awardsRepository = AppDataSource.getRepository(Award);
     await awardsRepository.save(awards);
 }

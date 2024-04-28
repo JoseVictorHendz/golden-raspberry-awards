@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Producer, } from './producers.entity';
 
-@Entity()
-export class Awards {
+@Entity("awards")
+export class Award {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -15,10 +16,15 @@ export class Awards {
   studios: string;
 
   @Column()
-  producers: string;
-
-  @Column()
   winner: boolean;
-}
 
-export type AwardsPartial = Omit<Awards, 'id'>
+  @ManyToMany(() => Producer, producer => producer.awards, {
+    cascade: true
+  })
+  @JoinTable({
+    name: "awards_producers",
+    joinColumn: { name: "award_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "producer_id", referencedColumnName: "id" }
+  })
+  producers: Producer[];
+}

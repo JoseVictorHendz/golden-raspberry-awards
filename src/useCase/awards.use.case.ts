@@ -1,9 +1,9 @@
 import AppDataSource from "../database/DataSource";
 import AwardsRepository from "../repository/awards.repository";
-import { Awards } from "../repository/entity/awards.entity";
+import { Award } from "../repository/entity/awards.entity";
 
 class AwardsUseCase {
-  async findProducerWinnerWhitiMaxMinIntervals(): Promise<Awards | undefined> {
+  async findProducerWinnerWhitiMaxMinIntervals(): Promise<Award | undefined> {
     const awardsRepository = new AwardsRepository();
 
     // await awardsRepository.findProducerMaxIntervals();

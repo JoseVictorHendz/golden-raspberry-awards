@@ -1,24 +1,19 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Award } from "./awards.entity";
 
-// @Entity()
-// export class Awards {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+@Entity("producers")
+export class Producer {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-//   @Column()
-//   year: number;
+  @Column({ unique: true})
+  name: string;
 
-//   @Column()
-//   title: string;
-
-//   @Column()
-//   studios: string;
-
-//   @Column()
-//   producers: string;
-
-//   @Column()
-//   winner: boolean;
-// }
-
-// export type AwardsPartial = Omit<Awards, 'id'>
+  @ManyToMany(() => Award, award => award.producers)
+  @JoinTable({
+    name: "awards_producers",
+    joinColumn: { name: "producer_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "award_id", referencedColumnName: "id" }
+  })
+  awards: Award[];
+}

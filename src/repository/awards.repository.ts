@@ -1,10 +1,10 @@
 import AppDataSource from "../database/DataSource";
-import { Awards } from "../repository/entity/awards.entity";
+import { Award } from "../repository/entity/awards.entity";
 
 class AwardsRepository {
 
   async findAllWinners():  Promise<void> {
-    const awardsRepository = AppDataSource.getRepository(Awards);
+    const awardsRepository = AppDataSource.getRepository(Award);
 
     const query = `
     SELECT producers, COUNT(*) AS count_of_winners

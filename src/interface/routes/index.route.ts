@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import awardsRouter from '../controllers/awards.controller';
+import filmsRouter from '../controllers/films.controller';
 
 
 const routes = Router();
 
-routes.use('/max-min-interval-winner', awardsRouter);
+routes.use('/max-min-interval-winner', filmsRouter);
 
 export default routes;

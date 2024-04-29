@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
 import { Producer, } from './producers.entity';
 
-@Entity("awards")
-export class Award {
+@Entity("films")
+export class Film {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,12 +18,12 @@ export class Award {
   @Column()
   winner: boolean;
 
-  @ManyToMany(() => Producer, producer => producer.awards, {
+  @ManyToMany(() => Producer, producer => producer.films, {
     cascade: true
   })
   @JoinTable({
-    name: "awards_producers",
-    joinColumn: { name: "award_id", referencedColumnName: "id" },
+    name: "films_producers",
+    joinColumn: { name: "film_id", referencedColumnName: "id" },
     inverseJoinColumn: { name: "producer_id", referencedColumnName: "id" }
   })
   producers: Producer[];

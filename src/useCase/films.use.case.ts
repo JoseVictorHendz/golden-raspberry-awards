@@ -1,19 +1,19 @@
 import AppDataSource from "../database/DataSource";
-import AwardsRepository from "../repository/awards.repository";
-import { Award } from "../repository/entity/awards.entity";
+import FilmsRepository from "../repository/films.repository";
+import { Film } from "../repository/entity/films.entity";
 import { ProducerHistory } from "../utils/types";
 
-class AwardsUseCase {
+class FilmsUseCase {
   async findProducerWinnerWhitiMaxMinIntervals(): Promise<ProducerHistory> {
-    const awardsRepository = new AwardsRepository();
+    const filmsRepository = new FilmsRepository();
 
-    const awards = await awardsRepository.findProducerWinnerWhitiMaxMinIntervals();
+    const films = await filmsRepository.findProducerWinnerWhitiMaxMinIntervals();
     
-    return this.findeProducerMaxMinIntervals(awards);
+    return this.findeProducerMaxMinIntervals(films);
   }
 
-  findeProducerMaxMinIntervals(awards: Award[]): ProducerHistory {
-    const groupedData = awards.reduce((acc, movie) => {
+  findeProducerMaxMinIntervals(films: Film[]): ProducerHistory {
+    const groupedData = films.reduce((acc, movie) => {
       movie.producers.forEach((producer) => {
         if (!acc[producer.name]) {
           acc[producer.name] = [];
@@ -62,4 +62,4 @@ class AwardsUseCase {
   }
 }
 
-export default AwardsUseCase;
+export default FilmsUseCase;

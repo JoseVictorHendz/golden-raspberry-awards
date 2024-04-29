@@ -5,39 +5,39 @@ import fs from 'fs';
 import config from '../utils/env';
 
 import AppDataSource from "./DataSource";
-import { Award } from "../repository/entity/awards.entity";
+import { Film } from "../repository/entity/films.entity";
 import { Producer } from '../repository/entity/producers.entity';
 
 export default async function populateDatabase(): Promise<void> {
     try {
-        const awardsRepository = AppDataSource.getRepository(Award);
-        const isPopulate = await awardsRepository.count();
+        const filmsRepository = AppDataSource.getRepository(Film);
+        const isPopulate = await filmsRepository.count();
 
         if (isPopulate) {
             console.log('database already populated')
             return;
         }
 
-        const awards: Partial<Award>[] = [];
+        const films: Partial<Film>[] = [];
         const producers: string[] = [];
         const filePath = path.join(__dirname, '..', 'resources', `${config.CSV_FILE_NAME}.csv`);
 
         fs.createReadStream(filePath)
             .pipe(csv({ separator: ';' }))
             .on('data', (data: any) => {
-                const award: Partial<Award> = {
+                const film: Partial<Film> = {
                     year: parseInt(data.year),
                     title: data.title,
                     studios: data.studios,
                     winner: data.winner === 'yes' ? true : false,
                     producers: data.producers
                 };
-                awards.push(award);
+                films.push(film);
                 producers.push(data.producers);
             })
             .on('end', async () => {
                 await saveProducers(producers)
-                await saveAwards(awards)
+                await saveFilms(films)
                 console.log("database has been populated")
             })
             .on('error', (error) => {
@@ -78,20 +78,20 @@ function parseArrayToProducer(producersArray: string[]) {
 }
 
 
-async function saveAwards(awards: Partial<Award>[]): Promise<void> {
+async function saveFilms(films: Partial<Film>[]): Promise<void> {
 
     const producersRepository = AppDataSource.getRepository(Producer);
 
-    for await (const award of awards) {
-        if (!award.producers) {
+    for await (const film of films) {
+        if (!film.producers) {
           continue; 
         }
     
-        const producerNames = award.producers.toString().split(/\band\b|,/);
+        const producerNames = film.producers.toString().split(/\band\b|,/);
     
         const filteredNames = producerNames.filter(part => part.trim() !== "");
     
-        award.producers = [];
+        film.producers = [];
     
         for (const producerName of filteredNames) {
             const regex = /^\s+|\s+$/g;
@@ -101,9 +101,9 @@ async function saveAwards(awards: Partial<Award>[]): Promise<void> {
                 console.log(producerName.replace(regex, ""))
                 continue;
             }
-            award.producers.push(producer);
+            film.producers.push(producer);
         }
       }
-    const awardsRepository = AppDataSource.getRepository(Award);
-    await awardsRepository.save(awards);
+    const filmsRepository = AppDataSource.getRepository(Film);
+    await filmsRepository.save(films);
 }

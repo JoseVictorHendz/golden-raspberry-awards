@@ -80,11 +80,10 @@ function parseArrayToProducer(producersArray: string[]) {
 
 async function saveAwards(awards: Partial<Award>[]): Promise<void> {
 
-    const newAwards: Partial<Award>[] = [];
     const producersRepository = AppDataSource.getRepository(Producer);
 
     for await (const award of awards) {
-        if (award.producers === undefined) {
+        if (!award.producers) {
           continue; 
         }
     
@@ -95,8 +94,11 @@ async function saveAwards(awards: Partial<Award>[]): Promise<void> {
         award.producers = [];
     
         for (const producerName of filteredNames) {
-            const producer = await producersRepository.findOneBy({ name: producerName });
+            const regex = /^\s+|\s+$/g;
+
+            const producer = await producersRepository.findOneBy({ name: producerName.replace(regex, "") });
             if(!producer) {
+                console.log(producerName.replace(regex, ""))
                 continue;
             }
             award.producers.push(producer);

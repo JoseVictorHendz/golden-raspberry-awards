@@ -4,7 +4,8 @@
   "description": "test to Texo IT",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch src/**/*.ts src/server.ts"
+    "start": "nodemon --watch src/**/*.ts src/server.ts",
+    "test": "jest --rootDir ./tests"
   },
   "author": "",
   "license": "ISC",

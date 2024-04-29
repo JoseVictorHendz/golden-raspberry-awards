@@ -5,6 +5,6 @@ import awardsRouter from '../controllers/awards.controller';
 
 const routes = Router();
 
-routes.use('/awards', awardsRouter);
+routes.use('/max-min-interval-winner', awardsRouter);
 
 export default routes;

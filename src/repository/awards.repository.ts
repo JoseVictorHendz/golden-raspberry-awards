@@ -1,22 +1,18 @@
 import AppDataSource from "../database/DataSource";
 import { Award } from "../repository/entity/awards.entity";
+import { ProducerHistory } from "../utils/types";
 
 class AwardsRepository {
 
-  async findAllWinners():  Promise<void> {
+  async findProducerWinnerWhitiMaxMinIntervals(): Promise<Award[]> {
     const awardsRepository = AppDataSource.getRepository(Award);
 
-    const query = `
-    SELECT producers, COUNT(*) AS count_of_winners
-    FROM awards
-    WHERE winner = true
-    GROUP BY producers;
-    `;
+    const response = await awardsRepository.find({
+      where: { winner: true },
+      relations: ["producers"],
+    });
 
-    const result = await awardsRepository.query(query);
-
-    console.log('--- all winners ---', result)
-
+    return response;
   }
 }
 

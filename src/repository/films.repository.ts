@@ -1,6 +1,5 @@
 import AppDataSource from "../database/DataSource";
 import { Film } from "../repository/entity/films.entity";
-import { ProducerHistory } from "../utils/types";
 
 class FilmsRepository {
 

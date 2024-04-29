@@ -1,4 +1,3 @@
-import AppDataSource from "../database/DataSource";
 import FilmsRepository from "../repository/films.repository";
 import { Film } from "../repository/entity/films.entity";
 import { ProducerHistory } from "../utils/types";

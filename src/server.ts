@@ -19,5 +19,4 @@ app.use(routes);
     })
 })();
 
-
-
+export default app;
